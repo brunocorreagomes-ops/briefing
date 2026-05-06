@@ -1,0 +1,39 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "DM Sans", sans-serif;
+  
+  --color-brand-warm: #f5f5f0;
+  --color-brand-olive: #5A5A40;
+  --color-brand-ink: #1a1a1a;
+}
+
+body {
+  @apply bg-brand-warm text-brand-ink font-sans antialiased;
+}
+
+h1, h2, h3, h4 {
+  @apply font-serif;
+}
+
+.form-input {
+  @apply w-full bg-white border-b border-brand-ink/20 py-3 px-4 focus:border-brand-olive focus:outline-none transition-colors duration-300;
+}
+
+.form-label {
+  @apply block text-xs uppercase tracking-widest text-brand-ink/60 mb-2 font-medium;
+}
+
+.chip {
+  @apply px-4 py-2 border border-brand-ink/20 rounded-full text-sm cursor-pointer transition-all duration-300 hover:border-brand-olive/50;
+}
+
+.chip-selected {
+  @apply bg-brand-olive text-white border-brand-olive;
+}
+
+.markdown-body {
+  @apply font-sans;
+}
