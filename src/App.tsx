@@ -5,7 +5,11 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronRight, ChevronLeft, Check, Send, Instagram, Music, MapPin, Globe, Phone, Mail, User, BookOpen, Star, Target, PencilLine } from 'lucide-react';
+import { 
+  ChevronRight, ChevronLeft, Check, Send, Instagram, Music, 
+  MapPin, Globe, Phone, Mail, User, BookOpen, Star, 
+  Target, PencilLine, Info, HelpCircle 
+} from 'lucide-react';
 
 interface FormData {
   nome: string;
@@ -70,6 +74,37 @@ const PUBLICO_OPTIONS = ['Crianças', 'Adolescentes', 'Adultos', 'Idosos', 'Casa
 const TEMA_OPTIONS = ['Ansiedade', 'Depressão', 'Relacionamentos', 'Luto', 'Carreira', 'Autoconhecimento', 'Trauma', 'Maternidade', 'Infância'];
 const FOTOS_OPTIONS = ['Sim, tenho fotos profissionais', 'Sim, tenho fotos amadoras', 'Não tenho fotos ainda', 'Vou providenciar'];
 
+const LabelWithTooltip = ({ label, tooltip }: { label: string; tooltip: string }) => {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div className="flex items-center gap-2 mb-2">
+      <label className="text-xs uppercase tracking-widest text-brand-ink/60 font-medium">{label}</label>
+      <div 
+        className="relative flex items-center"
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onClick={() => setShow(!show)}
+      >
+        <HelpCircle className="w-3.5 h-3.5 text-brand-olive/40 cursor-help hover:text-brand-olive transition-colors" />
+        <AnimatePresence>
+          {show && (
+            <motion.div
+              initial={{ opacity: 0, y: 5, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 5, scale: 0.95 }}
+              className="absolute left-6 z-50 w-64 p-3 bg-brand-ink text-white text-[11px] rounded-xl shadow-xl leading-relaxed cursor-default pointer-events-none"
+            >
+              <div className="absolute left-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 bg-brand-ink rotate-45" />
+              {tooltip}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
 export default function App() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>(initialData);
@@ -98,7 +133,6 @@ export default function App() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Prepare data for Formspree
     const dataToSend = {
       ...formData,
       modalidades: formData.modalidades.join(', '),
@@ -120,7 +154,6 @@ export default function App() {
       }
     } catch (err) {
       console.error('Submission error:', err);
-      // Fallback for demo purposes if formspree fails or blocks
       setIsSuccess(true); 
     } finally {
       setIsSubmitting(false);
@@ -159,30 +192,30 @@ export default function App() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="form-label">Nome Completo</label>
+              <LabelWithTooltip label="Nome Completo" tooltip="Como você gostaria que seu nome aparecesse na vitrine do site." />
               <input type="text" name="nome" value={formData.nome} onChange={handleInputChange} className="form-input" placeholder="Seu nome" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="form-label">CRP</label>
+                <LabelWithTooltip label="CRP" tooltip="Seu registro profissional ativo para fins de identificação obrigatória no site." />
                 <input type="text" name="crp" value={formData.crp} onChange={handleInputChange} className="form-input" placeholder="00/0000" />
               </div>
               <div>
-                <label className="form-label">WhatsApp</label>
+                <LabelWithTooltip label="WhatsApp" tooltip="O número que será vinculado aos botões de contato direto do site." />
                 <input type="tel" name="whatsapp" value={formData.whatsapp} onChange={handleInputChange} className="form-input" placeholder="(00) 00000-0000" />
               </div>
             </div>
             <div>
-              <label className="form-label">E-mail</label>
+              <LabelWithTooltip label="E-mail" tooltip="Para envio de materiais e comunicações oficiais do projeto." />
               <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="form-input" placeholder="seuemail@exemplo.com" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="form-label">Cidade / Estado</label>
+                <LabelWithTooltip label="Cidade / Estado" tooltip="A cidade principal de atuação para buscas regionais." />
                 <input type="text" name="cidade" value={formData.cidade} onChange={handleInputChange} className="form-input" placeholder="Cidade - UF" />
               </div>
               <div>
-                <label className="form-label">Endereço Completo (se houver atendimento presencial)</label>
+                <LabelWithTooltip label="Endereço Completo" tooltip="Será exibido no rodapé ou página de contato se você atender presencialmente." />
                 <input type="text" name="endereco" value={formData.endereco} onChange={handleInputChange} className="form-input" />
               </div>
             </div>
@@ -192,7 +225,7 @@ export default function App() {
         return (
           <div className="space-y-8">
             <section>
-              <label className="form-label mb-4">Modalidades de Atendimento</label>
+              <LabelWithTooltip label="Modalidades de Atendimento" tooltip="Isso ajudará a definir as seções de serviço do site." />
               <div className="flex flex-wrap gap-3">
                 {MODALIDADE_OPTIONS.map(opt => (
                   <button key={opt} type="button" onClick={() => toggleChip('modalidades', opt)} className={`chip ${formData.modalidades.includes(opt) ? 'chip-selected' : ''}`}>
@@ -202,7 +235,7 @@ export default function App() {
               </div>
             </section>
             <section>
-              <label className="form-label mb-4">Público Atendido</label>
+              <LabelWithTooltip label="Público Atendido" tooltip="Selecione todos que compõem sua base atual ou desejada de pacientes." />
               <div className="flex flex-wrap gap-3">
                 {PUBLICO_OPTIONS.map(opt => (
                   <button key={opt} type="button" onClick={() => toggleChip('publico', opt)} className={`chip ${formData.publico.includes(opt) ? 'chip-selected' : ''}`}>
@@ -212,7 +245,7 @@ export default function App() {
               </div>
             </section>
             <section>
-              <label className="form-label mb-4">Principais Temas / Especialidades</label>
+              <LabelWithTooltip label="Principais Temas / Especialidades" tooltip="Estes temas serão as palavras-chave para seu público te encontrar." />
               <div className="flex flex-wrap gap-3">
                 {TEMA_OPTIONS.map(opt => (
                   <button key={opt} type="button" onClick={() => toggleChip('temas', opt)} className={`chip ${formData.temas.includes(opt) ? 'chip-selected' : ''}`}>
@@ -222,11 +255,11 @@ export default function App() {
               </div>
             </section>
             <div>
-              <label className="form-label">Como você se apresenta? (Sua bio profissional)</label>
+              <LabelWithTooltip label="Como você se apresenta?" tooltip="Sua biografia escrita em primeira ou terceira pessoa. Pense no tom de voz." />
               <textarea name="apresentacao" value={formData.apresentacao} onChange={handleInputChange} className="form-input min-h-[120px]" placeholder="Conte um pouco sobre sua trajetória..." />
             </div>
             <div>
-              <label className="form-label">Qual o seu diferencial como profissional?</label>
+              <LabelWithTooltip label="Qual o seu diferencial?" tooltip="O que faz as pessoas escolherem você em vez de outro profissional? Ex: abordagem humanizada, especialização rara." />
               <textarea name="diferencial" value={formData.diferencial} onChange={handleInputChange} className="form-input min-h-[100px]" placeholder="O que torna seu atendimento único?" />
             </div>
           </div>
@@ -235,11 +268,11 @@ export default function App() {
         return (
           <div className="space-y-8">
             <div>
-              <label className="form-label">O que você definitivamente NÃO quer no site?</label>
+              <LabelWithTooltip label="O que você definitivamente NÃO quer?" tooltip="Ex: Não gosto de tons vivos, não quero fotos de cérebro, prefiro algo minimalista." />
               <textarea name="nao_quero" value={formData.nao_quero} onChange={handleInputChange} className="form-input min-h-[100px]" placeholder="Cores, estilos ou elementos que você não gosta..." />
             </div>
             <section>
-              <label className="form-label mb-4">Fotos do Consultório / Profissionais</label>
+              <LabelWithTooltip label="Fotos do Consultório / Profissionais" tooltip="A qualidade visual do site depende muito das imagens. Saber o que temos ajuda no layout." />
               <div className="flex flex-wrap gap-3">
                 {FOTOS_OPTIONS.map(opt => (
                   <button key={opt} type="button" onClick={() => toggleChip('fotos_consultorio', opt)} className={`chip ${formData.fotos_consultorio.includes(opt) ? 'chip-selected' : ''}`}>
@@ -255,28 +288,28 @@ export default function App() {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="form-label">Já possui domínio (URL)?</label>
+                <LabelWithTooltip label="Já possui domínio (URL)?" tooltip="Se você já comprou um endereço (ex: rynahayashi.com.br)." />
                 <input type="text" name="dominio_val" value={formData.dominio_val} onChange={handleInputChange} className="form-input" placeholder="www.exemplo.com.br" />
               </div>
               <div>
-                <label className="form-label">Sugestão de Domínio</label>
+                <LabelWithTooltip label="Sugestão de Domínio" tooltip="Caso não tenha, qual nome gostaria de registrar?" />
                 <input type="text" name="dominio_sugestao" value={formData.dominio_sugestao} onChange={handleInputChange} className="form-input" placeholder="Sua sugestão..." />
               </div>
             </div>
             <div>
-              <label className="form-label">Mensagem padrão para botão de WhatsApp</label>
+              <LabelWithTooltip label="Mensagem padrão WhatsApp" tooltip="A frase que aparecerá no celular do paciente quando ele clicar no botão do site." />
               <textarea name="mensagem_whatsapp" value={formData.mensagem_whatsapp} onChange={handleInputChange} className="form-input" placeholder="Ex: Olá, gostaria de agendar uma consulta." />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative">
-                <label className="form-label">Instagram</label>
+                <LabelWithTooltip label="Instagram" tooltip="Apenas o nome de usuário (ex: ryna_psico)." />
                 <div className="flex items-center">
                   <span className="text-brand-ink/40 mr-2">@</span>
                   <input type="text" name="instagram" value={formData.instagram} onChange={handleInputChange} className="form-input" placeholder="seuperfil" />
                 </div>
               </div>
               <div className="relative">
-                <label className="form-label">TikTok</label>
+                <LabelWithTooltip label="TikTok" tooltip="Opcional. Se tiver conteúdo profissional na plataforma." />
                 <div className="flex items-center">
                   <span className="text-brand-ink/40 mr-2">@</span>
                   <input type="text" name="tiktok" value={formData.tiktok} onChange={handleInputChange} className="form-input" placeholder="seuperfil" />
@@ -289,19 +322,19 @@ export default function App() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="form-label">Textos já existem? Onde posso encontrá-los?</label>
+              <LabelWithTooltip label="Textos já existem?" tooltip="Se você já escreveu sobre você em blogs, PDFs ou outras redes." />
               <textarea name="sobre_existente" value={formData.sobre_existente} onChange={handleInputChange} className="form-input" placeholder="Links, PDFs ou redes sociais..." />
             </div>
             <div>
-              <label className="form-label">Frases ou citações que gostaria no site</label>
+              <LabelWithTooltip label="Frases ou citações" tooltip="Aquela frase que resume seu pensamento ou abordagem clínica." />
               <textarea name="frases_site" value={formData.frases_site} onChange={handleInputChange} className="form-input" />
             </div>
             <div>
-              <label className="form-label">Observações específicas sobre o design/funções</label>
+              <LabelWithTooltip label="Observações de Design" tooltip="Ex: Gostaria de uma seção de blog futura, ou um botão flutuante específico." />
               <textarea name="observacoes_site" value={formData.observacoes_site} onChange={handleInputChange} className="form-input" />
             </div>
             <div>
-              <label className="form-label">Observações Gerais</label>
+              <LabelWithTooltip label="Observações Gerais" tooltip="Qualquer outra coisa que você considere importante para o projeto." />
               <textarea name="observacoes_gerais" value={formData.observacoes_gerais} onChange={handleInputChange} className="form-input" />
             </div>
           </div>
