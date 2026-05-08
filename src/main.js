@@ -1,3 +1,5 @@
+import './index.css';
+
 const STEPS = [
     { title: 'Identificação' },
     { title: 'Sua Prática' },
@@ -43,7 +45,7 @@ function initProgress() {
         dot.innerHTML = `
             <button type="button" id="progress-btn-${stepIdx}" class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 border bg-white border-[#1a1a1a]/10 text-[#1a1a1a]/40">
                 <span id="progress-text-${stepIdx}" class="text-xs transition-all duration-500 block">${stepIdx}</span>
-                <svg id="progress-icon-${stepIdx}" class="w-5 h-5 flex-shrink-0 transition-all duration-500 hidden opacity-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <svg id="progress-icon-${stepIdx}" width="20" height="20" class="w-5 h-5 flex-shrink-0 transition-all duration-500 hidden opacity-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             </button>
             <span id="progress-title-${stepIdx}" class="text-[10px] uppercase tracking-widest hidden md:block transition-colors duration-500 text-[#1a1a1a]/40">${s.title}</span>
         `;
@@ -93,7 +95,7 @@ function createLabel(label, tooltip) {
         <div class="flex items-center gap-2 mb-2 relative">
             <label class="text-xs uppercase tracking-widest text-[#1a1a1a]/60 font-medium">${label}</label>
             <div class="flex items-center tooltip-container group">
-                <svg class="w-3.5 h-3.5 text-[#5A5A40]/40 cursor-help hover:text-[#5A5A40] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <svg class="w-3.5 h-3.5 text-[#5A5A40]/40 cursor-help hover:text-[#5A5A40] transition-colors" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                 <div class="tooltip-box absolute top-full left-0 sm:left-auto sm:top-1/2 sm:-translate-y-1/2 sm:ml-6 ml-0 mt-1 sm:mt-0 z-50 w-[calc(100vw-4rem)] sm:w-64 max-w-64 p-3 bg-[#1a1a1a] text-white text-[11px] rounded-xl shadow-xl leading-relaxed opacity-0 transform sm:translate-y-0 sm:scale-95 translate-y-2 transition-all duration-200 pointer-events-none">
                     <div class="absolute top-[-4px] left-4 sm:top-1/2 sm:-translate-y-1/2 sm:left-[-4px] w-2 h-2 bg-[#1a1a1a] rotate-45"></div>
                     ${tooltip}

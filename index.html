@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Briefing · Ryna Hayashi</title>
-    <link rel="stylesheet" href="src/index.css">
     <style>
         /* Tooltip behavior */
         .tooltip-container:hover .tooltip-box,
@@ -54,14 +53,14 @@
 
             <div class="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-[#1a1a1a]/5 flex flex-col-reverse md:flex-row justify-between items-center gap-4 md:gap-0">
                 <button type="button" id="prev-btn" class="flex items-center justify-center gap-2 text-[#1a1a1a]/60 hover:text-[#1a1a1a] transition-colors font-medium px-4 py-2 hidden w-full md:w-auto">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Anterior
+                    <svg class="w-4 h-4" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Anterior
                 </button>
                 <div class="hidden md:block flex-1"></div>
                 <button type="button" id="next-btn" class="flex items-center justify-center gap-2 bg-[#5A5A40] text-white px-8 py-3 rounded-full hover:shadow-xl transition-all duration-300 font-medium tracking-wide w-full md:w-auto">
-                    Próximo <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                    Próximo <svg class="w-4 h-4" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                 </button>
                 <button type="submit" id="submit-btn" class="hidden items-center justify-center gap-2 bg-[#5A5A40] text-white px-10 py-4 rounded-full hover:shadow-xl transition-all duration-300 font-bold tracking-widest uppercase text-sm w-full md:w-auto">
-                    Enviar Briefing <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                    Enviar Briefing <svg class="w-4 h-4" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                 </button>
             </div>
         </form>
@@ -69,7 +68,7 @@
         <!-- Success Message -->
         <div id="success-screen" class="hidden text-center bg-white p-6 md:p-12 rounded-3xl md:rounded-[40px] shadow-sm border border-[#5A5A40]/10">
             <div class="w-16 h-16 bg-[#5A5A40] text-white rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <svg class="w-8 h-8" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             </div>
             <h2 class="text-4xl font-serif mb-4">Briefing Enviado</h2>
             <p class="text-[#1a1a1a]/60 mb-8 font-light">
@@ -89,6 +88,6 @@
         </div>
     </footer>
 
-    <script type="module" src="src/main.js"></script>
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>
