@@ -1,17 +1,22 @@
 const STEPS = [
-    { title: 'Identificação', icon: 'user' },
-    { title: 'Sua Prática', icon: 'book-open' },
-    { title: 'Preferências', icon: 'star' },
-    { title: 'Presença Digital', icon: 'globe' },
-    { title: 'Conteúdo do Site', icon: 'pencil-line' },
+    { title: 'Identificação' },
+    { title: 'Sua Prática' },
+    { title: 'Preferências' },
+    { title: 'Presença Digital' },
+    { title: 'Conteúdo do Site' },
 ];
 
 let currentStep = 1;
+
+// Initialize formData with all expected keys to avoid undefined issues
 const formData = {
-    modalidades: [],
-    publico: [],
-    temas: [],
-    fotos_consultorio: [],
+    nome: '', crp: '', whatsapp: '', email: '', cidade: '', endereco: '',
+    modalidades: [], publico: [], temas: [],
+    apresentacao: '', diferencial: '',
+    nao_quero: '', fotos_consultorio: [],
+    dominio_val: '', dominio_sugestao: '', mensagem_whatsapp: '',
+    instagram: '', tiktok: '',
+    sobre_existente: '', frases_site: '', observacoes_site: '', observacoes_gerais: ''
 };
 
 // UI Elements
@@ -25,35 +30,72 @@ const submitBtn = document.getElementById('submit-btn');
 const briefingForm = document.getElementById('briefing-form');
 const successScreen = document.getElementById('success-screen');
 
-function renderProgress() {
-    progressContainer.innerHTML = '<div class="absolute top-1/2 left-0 w-full h-[1px] bg-[#1a1a1a]/10 -z-10 -translate-y-1/2"></div>';
+function initProgress() {
+    progressContainer.innerHTML = `
+        <div class="absolute top-1/2 left-0 w-full h-[1px] bg-[#1a1a1a]/10 -z-10 -translate-y-1/2"></div>
+        <div id="progress-fill" class="absolute top-1/2 left-0 h-[1px] bg-[#5A5A40] -z-10 -translate-y-1/2 transition-all duration-500 ease-out" style="width: 0%"></div>
+    `;
     STEPS.forEach((s, idx) => {
         const stepIdx = idx + 1;
-        const isActive = currentStep === stepIdx;
-        const isDone = currentStep > stepIdx;
-        
         const dot = document.createElement('div');
-        dot.className = 'flex flex-col items-center gap-3';
+        dot.className = 'flex flex-col items-center gap-3 relative z-10';
+        dot.id = `progress-dot-${stepIdx}`;
         dot.innerHTML = `
-            <button type="button" class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 border ${
-                isActive ? 'bg-[#5A5A40] border-[#5A5A40] text-white shadow-lg' : isDone ? 'bg-[#5A5A40] text-white border-[#5A5A40]' : 'bg-white border-[#1a1a1a]/10 text-[#1a1a1a]/40'
-            }">
-                ${isDone ? '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>' : `<span class="text-xs">${stepIdx}</span>`}
+            <button type="button" id="progress-btn-${stepIdx}" class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 border bg-white border-[#1a1a1a]/10 text-[#1a1a1a]/40">
+                <span id="progress-text-${stepIdx}" class="text-xs transition-all duration-500 block">${stepIdx}</span>
+                <svg id="progress-icon-${stepIdx}" class="w-5 h-5 flex-shrink-0 transition-all duration-500 hidden opacity-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             </button>
-            <span class="text-[10px] uppercase tracking-widest hidden md:block ${isActive ? 'text-[#5A5A40] font-bold' : 'text-[#1a1a1a]/40'}">${s.title}</span>
+            <span id="progress-title-${stepIdx}" class="text-[10px] uppercase tracking-widest hidden md:block transition-colors duration-500 text-[#1a1a1a]/40">${s.title}</span>
         `;
         progressContainer.appendChild(dot);
     });
 }
 
+function updateProgress() {
+    STEPS.forEach((s, idx) => {
+        const stepIdx = idx + 1;
+        const isActive = currentStep === stepIdx;
+        const isDone = currentStep > stepIdx;
+        
+        const btn = document.getElementById(`progress-btn-${stepIdx}`);
+        const text = document.getElementById(`progress-text-${stepIdx}`);
+        const icon = document.getElementById(`progress-icon-${stepIdx}`);
+        const title = document.getElementById(`progress-title-${stepIdx}`);
+        
+        if (isActive) {
+            btn.className = 'w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 border bg-[#5A5A40] border-[#5A5A40] text-white shadow-lg';
+            text.classList.remove('hidden');
+            icon.classList.add('hidden');
+            title.className = 'text-[10px] uppercase tracking-widest hidden md:block transition-colors duration-500 text-[#5A5A40] font-bold';
+        } else if (isDone) {
+            btn.className = 'w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 border bg-[#5A5A40] text-white border-[#5A5A40]';
+            text.classList.add('hidden');
+            icon.classList.remove('hidden', 'opacity-0');
+            icon.classList.add('opacity-100');
+            title.className = 'text-[10px] uppercase tracking-widest hidden md:block transition-colors duration-500 text-[#1a1a1a]/40';
+        } else {
+            btn.className = 'w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 border bg-white border-[#1a1a1a]/10 text-[#1a1a1a]/40';
+            text.classList.remove('hidden');
+            icon.classList.add('hidden');
+            title.className = 'text-[10px] uppercase tracking-widest hidden md:block transition-colors duration-500 text-[#1a1a1a]/40';
+        }
+    });
+
+    const progressFill = document.getElementById('progress-fill');
+    if (progressFill) {
+        const percentage = ((currentStep - 1) / (STEPS.length - 1)) * 100;
+        progressFill.style.width = `${percentage}%`;
+    }
+}
+
 function createLabel(label, tooltip) {
     return `
-        <div class="flex items-center gap-2 mb-2">
+        <div class="flex items-center gap-2 mb-2 relative">
             <label class="text-xs uppercase tracking-widest text-[#1a1a1a]/60 font-medium">${label}</label>
-            <div class="relative flex items-center tooltip-container group">
+            <div class="flex items-center tooltip-container group">
                 <svg class="w-3.5 h-3.5 text-[#5A5A40]/40 cursor-help hover:text-[#5A5A40] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                <div class="tooltip-box absolute left-6 z-50 w-64 p-3 bg-[#1a1a1a] text-white text-[11px] rounded-xl shadow-xl leading-relaxed opacity-0 transform translate-y-2 scale-95 transition-all duration-200 pointer-events-none">
-                    <div class="absolute left-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 bg-[#1a1a1a] rotate-45"></div>
+                <div class="tooltip-box absolute top-full left-0 sm:left-auto sm:top-1/2 sm:-translate-y-1/2 sm:ml-6 ml-0 mt-1 sm:mt-0 z-50 w-[calc(100vw-4rem)] sm:w-64 max-w-64 p-3 bg-[#1a1a1a] text-white text-[11px] rounded-xl shadow-xl leading-relaxed opacity-0 transform sm:translate-y-0 sm:scale-95 translate-y-2 transition-all duration-200 pointer-events-none">
+                    <div class="absolute top-[-4px] left-4 sm:top-1/2 sm:-translate-y-1/2 sm:left-[-4px] w-2 h-2 bg-[#1a1a1a] rotate-45"></div>
                     ${tooltip}
                 </div>
             </div>
@@ -71,12 +113,12 @@ function renderStep() {
             <div class="space-y-6">
                 <div>${createLabel('Nome Completo', 'Como você gostaria que seu nome aparecesse na vitrine do site.')}
                     <input type="text" name="nome" class="form-input" placeholder="Seu nome"></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div>${createLabel('CRP', 'Seu registro profissional ativo.')}<input type="text" name="crp" class="form-input" placeholder="00/0000"></div>
                     <div>${createLabel('WhatsApp', 'Número vinculado aos botões do site.')}<input type="tel" name="whatsapp" class="form-input" placeholder="(00) 00000-0000"></div>
                 </div>
                 <div>${createLabel('E-mail', 'Para envios oficiais.')}<input type="email" name="email" class="form-input" placeholder="seuemail@exemplo.com"></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div>${createLabel('Cidade / Estado', 'Cidade principal de atuação.')}<input type="text" name="cidade" class="form-input" placeholder="Cidade - UF"></div>
                     <div>${createLabel('Endereço Completo', 'Exibido se houver atendimento presencial.')}<input type="text" name="endereco" class="form-input"></div>
                 </div>
@@ -84,7 +126,7 @@ function renderStep() {
         `;
     } else if (currentStep === 2) {
         html = `
-            <div class="space-y-8">
+            <div class="space-y-6 md:space-y-8">
                 <section>${createLabel('Modalidades', 'Aumenta as seções de serviço.')}
                     <div class="flex flex-wrap gap-3" data-category="modalidades">
                         ${['Presencial', 'Online'].map(opt => `<button type="button" class="chip ${formData.modalidades.includes(opt) ? 'selected' : ''}" data-value="${opt}">${opt}</button>`).join('')}
@@ -106,7 +148,7 @@ function renderStep() {
         `;
     } else if (currentStep === 3) {
         html = `
-            <div class="space-y-8">
+            <div class="space-y-6 md:space-y-8">
                 <div>${createLabel('O que NÃO quer?', 'Cores ou estilos que não gosta.')}<textarea name="nao_quero" class="form-input min-h-[100px]"></textarea></div>
                 <section>${createLabel('Fotos', 'Saber o que temos ajuda no layout.')}
                     <div class="flex flex-wrap gap-3" data-category="fotos_consultorio">
@@ -118,12 +160,12 @@ function renderStep() {
     } else if (currentStep === 4) {
         html = `
             <div class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div>${createLabel('Domínio Atual?', 'Se já comprou um URL.')}<input type="text" name="dominio_val" class="form-input" placeholder="www.exemplo.com.br"></div>
                     <div>${createLabel('Sugestão de Domínio', 'Caso não tenha.')}<input type="text" name="dominio_sugestao" class="form-input"></div>
                 </div>
                 <div>${createLabel('Mensagem WhatsApp', 'Frase inicial do paciente.')}<textarea name="mensagem_whatsapp" class="form-input"></textarea></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div>${createLabel('Instagram', 'Apenas o @.')}<input type="text" name="instagram" class="form-input" placeholder="@ryna_psico"></div>
                     <div>${createLabel('TikTok', 'Opcional.')}<input type="text" name="tiktok" class="form-input"></div>
                 </div>
@@ -184,7 +226,7 @@ function renderStep() {
         submitBtn.classList.remove('flex');
     }
     
-    renderProgress();
+    updateProgress();
 }
 
 nextBtn.addEventListener('click', () => {
@@ -232,4 +274,5 @@ briefingForm.addEventListener('submit', async (e) => {
     }
 });
 
+initProgress();
 renderStep();
